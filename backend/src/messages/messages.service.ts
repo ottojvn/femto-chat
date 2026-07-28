@@ -13,11 +13,20 @@ export class MessagesService {
     });
   }
 
+  readMessages(conversationId: string) {
+    return prisma.message.findMany({
+      where: {
+        conversationId
+      }
+    });
+  }
+
   writeMessage(createMessageDto: CreateMessageDto) {
     return prisma.message.create({
       data: {
         senderRole: createMessageDto.senderRole,
         conversationId: createMessageDto.conversationId,
+        steps: createMessageDto.steps,
         text: createMessageDto.text,
       }
     });

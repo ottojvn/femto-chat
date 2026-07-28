@@ -26,6 +26,7 @@ model Message {
       conversation      Conversation    @relation(fields: [conversationId], references: [id])
       conversationId    String
       createdAt         DateTime        @default(now())
+      steps             Json?
       text              String
 }
 
