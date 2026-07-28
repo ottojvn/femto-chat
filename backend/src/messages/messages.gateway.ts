@@ -8,10 +8,14 @@ import {
 import { MessagesService } from './messages.service.js';
 import { CreateMessageDto } from './dto/create-message.dto.js';
 import { Server, Socket } from 'socket.io';
+import { AgentService } from '../agent/agent.service.js';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class MessagesGateway {
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(
+    private readonly messagesService: MessagesService,
+    private readonly agentService: AgentService
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -26,7 +30,9 @@ export class MessagesGateway {
   async writeMessage(@MessageBody() createMessageDto: CreateMessageDto) {
     const userMessage = await this.messagesService.writeMessage(createMessageDto);
     this.server.to(createMessageDto.conversationId).emit('user-message', userMessage.text);
-    this.server.to(createMessageDto.conversationId).emit('agent-message', 'Message Received!');
+    return await this.agentService.queue(userMessage.text, (text: string) => {
+      this.server.to(createMessageDto.conversationId).emit('agent-message', text);
+    });
   }
 
 }
