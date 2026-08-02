@@ -1,5 +1,11 @@
 import { Role } from '../../../generated/prisma/enums.js';
-import { IsNotEmpty, IsEnum, IsUUID, IsString, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsEnum,
+  IsUUID,
+  IsString,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateMessageDto {
   @IsNotEmpty()
@@ -8,10 +14,10 @@ export class CreateMessageDto {
 
   @IsNotEmpty()
   @IsUUID()
-  conversationId: string;
+  chatId: string;
 
   @IsOptional()
-  steps?: any;
+  steps?: Array<{ type: string; content: { type: string; text: string }[] }>;
 
   @IsNotEmpty()
   @IsString()

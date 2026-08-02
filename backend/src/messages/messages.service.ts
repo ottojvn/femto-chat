@@ -1,34 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../lib/prisma.js';
 import { CreateMessageDto } from './dto/create-message.dto.js';
-import { prisma } from '../lib/prisma.js';
 
 @Injectable()
 export class MessagesService {
-  joinConversation(userId: string, conversationId: string) {
-    return prisma.message.findMany({
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async findMessagesByChat(chatId: string, userId?: string) {
+    return await this.prismaService.message.findMany({
       where: {
-        conversation: { userId },
-        conversationId
-      }
+        chat: { userId },
+        chatId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
   }
 
-  readMessages(conversationId: string) {
-    return prisma.message.findMany({
-      where: {
-        conversationId
-      }
-    });
-  }
-
-  writeMessage(createMessageDto: CreateMessageDto) {
-    return prisma.message.create({
+  async createMessage(createMessageDto: CreateMessageDto) {
+    return await this.prismaService.message.create({
       data: {
         senderRole: createMessageDto.senderRole,
-        conversationId: createMessageDto.conversationId,
-        steps: createMessageDto.steps,
+        chatId: createMessageDto.chatId,
+        steps: createMessageDto.steps as Array<{
+          type: string;
+          content: { type: string; text: string }[];
+        }>,
         text: createMessageDto.text,
-      }
+      },
     });
   }
 }

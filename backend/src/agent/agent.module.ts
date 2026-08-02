@@ -3,14 +3,15 @@ import { AgentService } from './agent.service.js';
 import { GoogleGenAI } from '@google/genai';
 
 @Module({
-  providers: [AgentService,
+  providers: [
+    AgentService,
     {
       provide: 'GOOGLE_GENAI_CLIENT',
       useFactory: () => {
-        return new GoogleGenAI({})
-      }
-    }
+        return new GoogleGenAI({});
+      },
+    },
   ],
-  exports: [AgentService]
+  exports: [AgentService],
 })
 export class AgentModule {}

@@ -1,5 +1,5 @@
 {
-  "name": "fento-chat",
+  "name": "femto-chat",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -23,6 +23,7 @@
     "@google/genai": "^2.13.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.2",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/platform-socket.io": "^11.1.28",
@@ -42,11 +43,13 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.13.3",
     "@types/pg": "^8.20.0",
     "@types/supertest": "^7.0.0",
+    "bcrypt": "^6.0.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
@@ -86,6 +89,7 @@
     "prisma@7.9.0": true,
     "unrs-resolver@1.12.2": true,
     "@google/genai@2.13.0": true,
-    "protobufjs@7.6.5": true
+    "protobufjs@7.6.5": true,
+    "bcrypt@6.0.0": true
   }
 }
