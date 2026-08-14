@@ -4,7 +4,7 @@ import { CreateChatDto } from './dto/create-chat.dto.js';
 
 @Injectable()
 export class ChatsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) { }
 
   async create(createChatDto: CreateChatDto) {
     return await this.prismaService.chat.create({
@@ -34,5 +34,9 @@ export class ChatsService {
 
   async remove(id: string) {
     return await this.prismaService.chat.delete({ where: { id } });
+  }
+
+  async update(id: string, name: string) {
+    return await this.prismaService.chat.update({ where: { id }, data: { name } });
   }
 }

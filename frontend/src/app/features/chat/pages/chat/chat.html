@@ -1,38 +1,137 @@
-<div class="flex h-screen bg-gray-100">
-    <div class="w-80 bg-white shadow-md">
-        <h1>Femto Chat</h1>
-        <button (click)="createChat()">Create Chat</button>
+<div class="flex h-screen bg-gray-50 text-gray-800">
 
-        @for (chat of chats(); track chat.id) {
-        <button (click)="selectChat(chat)" [class.bg-gray-800]="activeChat()?.id === chat.id"
-            class="cursor-pointer p-2 hover:bg-gray-200">
-            {{ chat.name }}
-        </button>
-        }
+      <!-- 🔹 SIDEBAR: Lista de Conversas -->
+      <aside class="w-64 flex-shrink-0 bg-gray-900 text-white flex flex-col justify-between p-4 shadow-xl">
+        <div>
+          <!-- Header / Logo -->
+          <div class="flex items-center justify-between mb-6 px-2">
+            <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+              Femto Chat
+            </h1>
+          </div>
 
-        <button (click)="logout()">Logout</button>
-    </div>
-    <div class="flex-1 flex flex-col">
-        <div class="bg-white shadow-md p-4">
-            <h2>{{ activeChat()?.name }}</h2>
+          <!-- Botão Criar Chat -->
+          <button
+            (click)="createChat()"
+            class="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium transition shadow-
+  md flex items-center justify-center gap-2 mb-6 cursor-pointer">
+            <span>+ Novo Chat</span>
+          </button>
+
+          <!-- Lista de Chats -->
+          <div class="space-y-1.5 overflow-y-auto max-h-[calc(100vh-220px)] pr-1">
+            @for (chat of chats(); track chat.id) {
+              <div
+                (click)="selectChat(chat)"
+                [class.bg-gray-800]="activeChat()?.id === chat.id"
+                [class.border-l-4]="activeChat()?.id === chat.id"
+                [class.border-indigo-500]="activeChat()?.id === chat.id"
+                class="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-800 transition cursor-pointer text-sm">
+
+                <!-- Nome da conversa -->
+                <span class="truncate font-medium text-gray-200 flex-1 pr-2">
+                  {{ chat.name || 'Nova Conversa' }}
+                </span>
+
+                <!-- Botões de Ação (Renomear / Apagar) -->
+                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    (click)="renameChat(chat, $event)"
+                    title="Renomear"
+                    class="p-1 hover:text-indigo-400 text-gray-400 text-xs">
+                    ✏️
+                  </button>
+                  <button
+                    (click)="deleteChat(chat, $event)"
+                    title="Apagar"
+                    class="p-1 hover:text-red-400 text-gray-400 text-xs">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-4">
-            @for (msg of messages(); track msg.id) {
-            <div class="flex" [class.justify-end]="msg.senderRole === 'USER'" [class.justify-start]="msg.senderRole === 'AGENT'">
-                <div
-              class=" max-w-md p-3 rounded-lg text-sm" [class.bg-indigo-600]="msg.senderRole === 'USER'"
-                [class.text-white]="msg.senderRole === 'USER'" [class.bg-white]="msg.senderRole === 'AGENT'"
-                [class.text-gray-900]="msg.senderRole === 'AGENT'" [class.shadow-sm]="msg.senderRole === 'AGENT'">
+        <!-- Rodapé Sidebar: Logout -->
+        <div class="border-t border-gray-800 pt-4">
+          <button
+            (click)="logout()"
+            class="w-full py-2 px-4 bg-gray-800 hover:bg-red-600/20 hover:text-red-400 text-gray-300 rounded-lg text-sm font-medium
+  transition flex items-center justify-center gap-2 cursor-pointer">
+            <span>Sair da Conta</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- 🔹 ÁREA PRINCIPAL DO CHAT -->
+      <main class="flex-1 flex flex-col bg-gray-100">
+
+        <!-- Topo: Título da Conversa Ativa -->
+        <header class="bg-white border-b border-gray-200 p-4 shadow-sm flex items-center justify-between">
+          <h2 class="text-base font-semibold text-gray-800">
+            {{ activeChat()?.name || 'Selecione ou crie uma conversa' }}
+          </h2>
+        </header>
+
+        <!-- Centro: Área de Mensagens com Scroll (ref #messagesContainer) -->
+        <section #messagesContainer class="flex-1 overflow-y-auto p-6 space-y-4">
+          @for (msg of messages(); track msg.id) {
+            <div
+              class="flex"
+              [class.justify-end]="msg.senderRole === 'USER'"
+              [class.justify-start]="msg.senderRole === 'AGENT'">
+
+              <div
+                class="max-w-xl p-4 rounded-2xl text-sm shadow-sm leading-relaxed"
+                [class.bg-indigo-600]="msg.senderRole === 'USER'"
+                [class.text-white]="msg.senderRole === 'USER'"
+                [class.rounded-br-none]="msg.senderRole === 'USER'"
+                [class.bg-white]="msg.senderRole === 'AGENT'"
+                [class.text-gray-800]="msg.senderRole === 'AGENT'"
+                [class.border]="msg.senderRole === 'AGENT'"
+                [class.border-gray-200]="msg.senderRole === 'AGENT'"
+                [class.rounded-bl-none]="msg.senderRole === 'AGENT'">
                 {{ msg.text }}
+              </div>
             </div>
-        </div>
-        }
-    </div>
+          }
 
-    <div class="p-4 bg-white border-t">
-        <input [(ngModel)]="inputText" (keyup.enter)="send()" placeholder="Type a message..." />
-        <button (click)="send()">Send</button>
+          <!-- Indicador Animado: IA Digitando -->
+          @if (isAgentTyping()) {
+            <div class="flex justify-start">
+              <div class="bg-white border border-gray-200 text-gray-500 text-xs px-4 py-3 rounded-2xl rounded-bl-none shadow-sm flex
+  items-center gap-2">
+                <span class="font-medium text-indigo-600">IA digitando</span>
+                <span class="flex gap-1">
+                  <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce"></span>
+                  <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                  <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                </span>
+              </div>
+            </div>
+          }
+        </section>
+
+        <!-- Rodapé: Campo de Envio de Mensagens -->
+        <footer class="p-4 bg-white border-t border-gray-200">
+          <div class="max-w-4xl mx-auto flex items-center gap-3">
+            <input
+              [(ngModel)]="inputText"
+              (keyup.enter)="send()"
+              placeholder="Digite sua mensagem para a IA..."
+              class="flex-1 bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2
+  focus:ring-indigo-500 focus:bg-white transition"
+            />
+
+            <button
+              (click)="send()"
+              class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-md transition
+  flex items-center gap-2 cursor-pointer">
+              Enviar
+            </button>
+          </div>
+        </footer>
+
+      </main>
     </div>
-</div>
-</div>

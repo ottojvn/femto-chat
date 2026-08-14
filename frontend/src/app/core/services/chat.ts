@@ -65,4 +65,12 @@ export class Chat {
             callback(response);
         });
     }
+
+    deleteChat(chatId: string): Observable<void> {
+        return this.http.delete<void>(`${environment.apiUrl}/chats/${chatId}`);
+    }
+
+    updateChat(chatId: string, name: string): Observable<ChatModel> {
+        return this.http.patch<ChatModel>(`${environment.apiUrl}/chats/${chatId}`, { name });
+    }
 }
