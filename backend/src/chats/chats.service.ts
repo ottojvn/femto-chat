@@ -10,6 +10,7 @@ export class ChatsService {
     return await this.prismaService.chat.create({
       data: {
         userId: createChatDto.userId,
+        ...(createChatDto.name ? { name: createChatDto.name } : {}),
       },
     });
   }

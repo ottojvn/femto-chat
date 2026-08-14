@@ -1,0 +1,38 @@
+<div class="flex h-screen bg-gray-100">
+    <div class="w-80 bg-white shadow-md">
+        <h1>Femto Chat</h1>
+        <button (click)="createChat()">Create Chat</button>
+
+        @for (chat of chats(); track chat.id) {
+        <button (click)="selectChat(chat)" [class.bg-gray-800]="activeChat()?.id === chat.id"
+            class="cursor-pointer p-2 hover:bg-gray-200">
+            {{ chat.name }}
+        </button>
+        }
+
+        <button (click)="logout()">Logout</button>
+    </div>
+    <div class="flex-1 flex flex-col">
+        <div class="bg-white shadow-md p-4">
+            <h2>{{ activeChat()?.name }}</h2>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4">
+            @for (msg of messages(); track msg.id) {
+            <div class="flex" [class.justify-end]="msg.senderRole === 'USER'" [class.justify-start]="msg.senderRole === 'AGENT'">
+                <div
+              class=" max-w-md p-3 rounded-lg text-sm" [class.bg-indigo-600]="msg.senderRole === 'USER'"
+                [class.text-white]="msg.senderRole === 'USER'" [class.bg-white]="msg.senderRole === 'AGENT'"
+                [class.text-gray-900]="msg.senderRole === 'AGENT'" [class.shadow-sm]="msg.senderRole === 'AGENT'">
+                {{ msg.text }}
+            </div>
+        </div>
+        }
+    </div>
+
+    <div class="p-4 bg-white border-t">
+        <input [(ngModel)]="inputText" (keyup.enter)="send()" placeholder="Type a message..." />
+        <button (click)="send()">Send</button>
+    </div>
+</div>
+</div>

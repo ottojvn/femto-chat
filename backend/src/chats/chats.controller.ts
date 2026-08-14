@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard.js';
 import { ChatsService } from './chats.service.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
@@ -12,7 +12,7 @@ export class ChatsController {
   async findUserChats(
     @CurrentUser('sub') userId: string,
   ): Promise<
-    { id: string; userId: string; createdAt: Date; updatedAt: Date }[]
+    { id: string; name: string; userId: string; createdAt: Date; updatedAt: Date }[]
   > {
     return await this.chatsService.findUserChats(userId);
   }
@@ -20,7 +20,8 @@ export class ChatsController {
   @Post()
   async create(
     @CurrentUser('sub') userId: string,
-  ): Promise<{ id: string; userId: string; createdAt: Date; updatedAt: Date }> {
-    return await this.chatsService.create({ userId });
+    @Body() body?: { name?: string },
+  ): Promise<{ id: string; name: string; userId: string; createdAt: Date; updatedAt: Date }> {
+    return await this.chatsService.create({ userId, name: body?.name });
   }
 }
