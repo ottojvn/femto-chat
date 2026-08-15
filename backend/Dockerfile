@@ -15,10 +15,10 @@ RUN npm ci
 # Copia todo o código fonte
 COPY . .
 
-# Gera o Prisma Client nativo
+# Gera o Prisma Client padrão em node_modules/@prisma/client
 RUN npx prisma generate
 
-# Compila o projeto NestJS (compila src/ e generated/ para dist/)
+# Compila o projeto NestJS para dist/
 RUN npm run build
 
 # Remove dependências de desenvolvimento para reduzir o tamanho da imagem
@@ -34,12 +34,12 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copia apenas os arquivos necessários do estágio de build
+# Copia apenas os artefatos necessários
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/generated ./generated
+COPY --from=builder /app/prisma.config.ts ./
 
 EXPOSE 3000
 

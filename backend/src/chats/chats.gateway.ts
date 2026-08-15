@@ -9,7 +9,7 @@ import { AgentService } from '../agent/agent.service.js';
 import { ChatsService } from './chats.service.js';
 import { CreateMessageDto } from '../messages/dto/create-message.dto.js';
 import { MessagesService } from '../messages/messages.service.js';
-import { Role } from '../../generated/prisma/enums.js';
+import { Role } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({ cors: { origin: '*' } })
