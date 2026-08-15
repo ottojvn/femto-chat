@@ -12,13 +12,13 @@ COPY prisma ./prisma/
 # Instala todas as dependências (incluindo devDependencies para build)
 RUN npm ci
 
-# Gera o Prisma Client nativo
-RUN npx prisma generate
-
 # Copia todo o código fonte
 COPY . .
 
-# Compila o projeto NestJS
+# Gera o Prisma Client nativo
+RUN npx prisma generate
+
+# Compila o projeto NestJS (compila src/ e generated/ para dist/)
 RUN npm run build
 
 # Remove dependências de desenvolvimento para reduzir o tamanho da imagem
