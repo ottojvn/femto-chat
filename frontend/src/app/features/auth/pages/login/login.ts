@@ -20,11 +20,7 @@ export class Login {
   });
 
   onSubmit(): void {
-    console.log("OnSubmit called");
-    console.log("Validation status:", this.loginForm.valid);
-    console.log("Form values:", this.loginForm.value);
     if (!this.loginForm.valid) {
-      console.log("Form is invalid");
       this.loginForm.markAllAsTouched();
       return;
     }
@@ -37,7 +33,6 @@ export class Login {
     }
 
     const credentials = { email, password };
-    console.log("Credentials:", JSON.stringify(credentials));
 
     this.authService.login(credentials).subscribe({
       next: () => {

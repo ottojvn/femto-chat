@@ -20,12 +20,8 @@ export class Signup {
     password: ['', Validators.required],
   });
   onSubmit(): void {
-    console.log("OnSubmit called");
-    console.log("Validation status:", this.signupForm.valid);
-    console.log("Form values:", this.signupForm.value);
-
     if (!this.signupForm.valid) {
-      console.log("Form is invalid");
+
       this.signupForm.markAllAsTouched();
       return;
     }
